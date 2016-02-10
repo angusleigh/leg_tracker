@@ -20,7 +20,7 @@ Demos
 -------------------
 - try $ roslaunch leg_tracker demo_stationary_simple_environment.launch to see a demo of it working on a stationary robot.
 - there are a bunch more demo launch files in the /launch directory.
-- youtu.be/F2Qx3O5AyBs
+- video: [youtu.be/F2Qx3O5AyBs](youtu.be/F2Qx3O5AyBs), which also includes a brief explaination of the method. 
 
 
 Subscribed topics
