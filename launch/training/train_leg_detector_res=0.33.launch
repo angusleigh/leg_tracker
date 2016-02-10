@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+
+<!-- Not shown, but you can also include test bags to get a testing error!-->
+<launch>
+	
+  <arg name="save_file" value="$(find leg_tracker)/config/trained_leg_detector_res=0.33.yaml" />
+
+  <arg name="pos_bag_1" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_1_extracted.bag" />
+  <arg name="pos_bag_2" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_2_extracted.bag" />
+  <arg name="pos_bag_3" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_3_extracted.bag" />
+  <arg name="pos_bag_4" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_4_extracted.bag" />
+  <arg name="pos_bag_6" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_6_extracted.bag" />
+  <arg name="pos_bag_7" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_7_extracted.bag" />
+  <arg name="pos_scan_topic" value="/training_scan" />
+
+  <arg name="neg_bag_1" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/negative_1.bag" />
+  <arg name="neg_bag_2" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/negative_2.bag" />
+  <arg name="neg_bag_3" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/negative_3.bag" />
+  <arg name="neg_bag_4" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/negative_4.bag" />
+  <arg name="neg_bag_9" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/negative_9.bag" />
+  <arg name="neg_scan_topic_1" value="/left_scan" />
+  <arg name="neg_scan_topic_2" value="/right_scan" />
+  <arg name="neg_scan_topic_3" value="/rear_scan" />
+
+  <node pkg="leg_tracker" type="train_leg_detector" name="train_leg_detector" required="true"
+        args="--pos $(arg pos_bag_1) $(arg pos_scan_topic) 
+              --pos $(arg pos_bag_2) $(arg pos_scan_topic) 
+              --pos $(arg pos_bag_3) $(arg pos_scan_topic) 
+              --pos $(arg pos_bag_4) $(arg pos_scan_topic) 
+              --pos $(arg pos_bag_6) $(arg pos_scan_topic) 
+              --pos $(arg pos_bag_7) $(arg pos_scan_topic)               
+              --neg $(arg neg_bag_1) $(arg neg_scan_topic_1) 
+              --neg $(arg neg_bag_1) $(arg neg_scan_topic_2) 
+              --neg $(arg neg_bag_1) $(arg neg_scan_topic_3)               
+              --neg $(arg neg_bag_2) $(arg neg_scan_topic_1) 
+              --neg $(arg neg_bag_2) $(arg neg_scan_topic_2) 
+              --neg $(arg neg_bag_2) $(arg neg_scan_topic_3) 
+              --neg $(arg neg_bag_3) $(arg neg_scan_topic_1) 
+              --neg $(arg neg_bag_3) $(arg neg_scan_topic_2) 
+              --neg $(arg neg_bag_3) $(arg neg_scan_topic_3) 
+              --neg $(arg neg_bag_4) $(arg neg_scan_topic_1) 
+              --neg $(arg neg_bag_4) $(arg neg_scan_topic_2) 
+              --neg $(arg neg_bag_4) $(arg neg_scan_topic_3) 
+              --neg $(arg neg_bag_9) $(arg neg_scan_topic_1) 
+              --neg $(arg neg_bag_9) $(arg neg_scan_topic_2) 
+              --neg $(arg neg_bag_9) $(arg neg_scan_topic_3)
+              --save_file $(arg save_file)" 
+              output="screen"/> 
+</launch>
+
+

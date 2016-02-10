@@ -1,0 +1,225 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="FRMI">
+
+  <!-- Macro -->
+  <xacro:property name="PI" value="3.14159265" />
+
+  <xacro:property name="base_length" value=".72" />
+  <xacro:property name="base_width" value=".65" />
+  <xacro:property name="base_height" value=".36" />
+
+  <xacro:property name="x_wheel" value="0.11" />
+  <xacro:property name="wheel_radius" value=".16" />
+  <xacro:property name="small_wheel_radius" value=".10" />
+
+  <xacro:property name="chair_seat_height" value=".18" />
+
+  <xacro:property name="laser_height" value=".08" />
+
+  <xacro:property name="right_sonnar_plate_length" value=".07" />
+  <xacro:property name="right_sonnar_plate_width" value=".105" />
+  <xacro:property name="left_sonnar_plate_length" value=".07" />
+  <xacro:property name="left_sonnar_plate_width" value=".11" />
+
+	<xacro:property name="right_laser_x" value="0.862" />
+/>
+	<xacro:property name="right_laser_y" value="-0.232019" />
+
+	<xacro:property name="right_laser_orient" value="-0.785398" />
+	<xacro:property name="left_laser_x" value="0.842117" />
+	<xacro:property name="left_laser_y" value="0.229516" />
+	<xacro:property name="left_laser_orient" value="0.669357" />
+
+ <xacro:property name="rear_laser_x" value="-0.200683" />
+  <xacro:property name="rear_laser_y" value="0.0023804" />
+  <xacro:property name="rear_laser_orient" value="3.09079" />
+
+  <xacro:property name="kinect_x" value="0.43" />
+  <xacro:property name="kinect_y" value="0.13" />
+  <xacro:property name="kinect_orient" value="0" />
+
+  <!-- wheel -->
+  <xacro:macro name="wheel" params="name radius width">
+    <link name="${name}_wheel">
+      <visual>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+        <material name="Dark Green">
+          <color rgba="0 100 0 1.0"/>
+        </material>
+      </visual>
+    </link>
+  </xacro:macro>
+
+  <!-- laser -->
+  <xacro:macro name="laser" params="name">
+    <link name="${name}_laser">
+      <visual>
+        <geometry>
+          <cylinder radius="0.05" length="${laser_height}"/>
+        </geometry>
+        <material name="Orange">
+          <color rgba="255 165 0 1.0"/>
+        </material>
+      </visual>
+    </link>
+  </xacro:macro>
+
+  <!-- sonnar -->
+  <xacro:macro name="sonnar" params="name">
+    <link name="${name}_sonnar">
+      <visual>
+        <geometry>
+          <box size="0.04 0.05 0.02" />
+        </geometry>
+        <material name="Orange">
+          <color rgba="100 165 0 1.0"/>
+        </material>
+      </visual>
+    </link>
+  </xacro:macro>
+
+  <!-- a fixed joint -->
+  <xacro:macro name="macro_fixed_joint" params="name parent_name x y z roll pitch yaw">
+    <joint name="joint_${name}" type="fixed">
+      <parent link="${parent_name}"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="${roll} ${pitch} ${yaw}" />
+    </joint>
+  </xacro:macro>
+
+  <!-- a continuous joint : a joint that can turn -->
+  <xacro:macro name="macro_continuous_joint" params="name parent_name x y z roll pitch yaw">
+    <joint name="joint_${name}" type="continuous">
+      <parent link="${parent_name}"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="${roll} ${pitch} ${yaw}" />
+    </joint>
+  </xacro:macro>
+
+  <!-- Link -->
+  <link name="base_link" >
+    <visual>
+      <origin xyz="${x_wheel} 0 ${base_height/2-wheel_radius}" rpy="0 0 0" />
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}" />
+      </geometry>
+      <material name="red motor">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="footprint_base_link"/>
+
+  <link name="chair_seat" >
+    <visual>
+      <geometry>
+        <box size="${base_length/2+x_wheel} ${base_width} ${chair_seat_height}" />
+      </geometry>
+      <material name="Lawn Green">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="chair_back" >
+    <visual>
+      <geometry>
+        <box size="0.09 0.65 0.60" />
+      </geometry>
+      <material name="Lawn Green"/>
+    </visual>
+  </link>
+
+  <link name="right_armrest" >
+    <visual>
+      <geometry>
+        <box size="${base_length/2+x_wheel} 0.05 0.26" />
+      </geometry>
+      <material name="Lawn Green"/>
+    </visual>
+  </link>
+
+  <link name="left_armrest" >
+    <visual>
+      <geometry>
+        <box size="${base_length/2+x_wheel} 0.05 0.26" />
+      </geometry>
+      <material name="Lawn Green"/>
+    </visual>
+  </link>
+
+  <xacro:wheel name="right" radius="${wheel_radius}" width="0.07"/>
+  <xacro:wheel name="left" radius="${wheel_radius}" width="0.07"/>
+
+  <xacro:wheel name="right_small" radius="${small_wheel_radius}" width="0.05"/>
+  <xacro:wheel name="left_small" radius="${small_wheel_radius}" width="0.05"/>
+
+  <xacro:laser name="right"/>
+  <xacro:laser name="left"/>
+  <xacro:laser name="rear"/>
+
+  <xacro:sonnar name="right_center"/>
+  <xacro:sonnar name="right_left"/>
+  <xacro:sonnar name="right_right"/>
+
+  <xacro:sonnar name="left_center"/>
+  <xacro:sonnar name="left_left"/>
+  <xacro:sonnar name="left_right"/>
+
+
+  <!-- kinect -->
+  <link name="openni_camera" >
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.25 0.07" />
+      </geometry>
+      <material name="White">
+        <color rgba="255 255 255 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <link name="openni_depth_frame"/>
+  <link name="openni_rgb_frame"/>
+  <link name="openni_depth_optical_frame"/>
+  <link name="openni_rgb_optical_frame"/>
+
+
+  <!-- Joint -->
+
+  <xacro:macro_fixed_joint name="footprint_base_link" parent_name="base_link" x ="0" y="0" z="-0.18" roll="0" pitch="0" yaw="0"/>
+
+  <xacro:macro_fixed_joint name="right_laser" parent_name="base_link" x ="${right_laser_x}" y="${right_laser_y}" z="0" roll="0" pitch="0" yaw="${right_laser_orient}"/>
+  <xacro:macro_fixed_joint name="left_laser" parent_name="base_link" x ="${left_laser_x}" y="${left_laser_y}" z="0" roll="0" pitch="0" yaw="${left_laser_orient}"/>
+  <xacro:macro_fixed_joint name="rear_laser" parent_name="base_link" x ="${rear_laser_x}" y="${rear_laser_y}" z="0.2" roll="0" pitch="0" yaw="${rear_laser_orient}"/>
+
+  <xacro:macro_continuous_joint name="right_wheel" parent_name="base_link" x ="0" y="${-base_width/2}" z="0" roll="${-PI/2}" pitch="0" yaw="0"/>
+  <xacro:macro_continuous_joint name="left_wheel" parent_name="base_link" x ="0" y="${base_width/2}" z="0" roll="${PI/2}" pitch="0" yaw="0"/>
+
+  <xacro:macro_continuous_joint name="right_small_wheel" parent_name="base_link" x ="${base_length/2}" y="${-base_width/2}" z="${small_wheel_radius-wheel_radius}" roll="${-PI/2}" pitch="${-PI/2}" yaw="0"/>
+  <xacro:macro_continuous_joint name="left_small_wheel" parent_name="base_link" x ="${base_length/2}" y="${base_width/2}" z="${small_wheel_radius-wheel_radius}" roll="${PI/2}" pitch="${-PI/2}" yaw="0"/>
+
+  <xacro:macro_fixed_joint name="chair_seat" parent_name="base_link" x ="${base_length/4+x_wheel/2}" y="0" z="${chair_seat_height/2 + base_height - wheel_radius}" roll="0" pitch="0" yaw="0"/>
+
+  <xacro:macro_fixed_joint name="chair_back" parent_name="chair_seat" x ="-0.255" y="0" z="0.37" roll="0" pitch="${-PI/18}" yaw="0"/>
+  <xacro:macro_fixed_joint name="right_armrest" parent_name="chair_seat" x ="0" y="${-base_width/2}" z="0.22" roll="0" pitch="0" yaw="0"/>
+  <xacro:macro_fixed_joint name="left_armrest" parent_name="chair_seat" x ="0" y="${base_width/2}" z="0.22" roll="0" pitch="0" yaw="0"/>
+
+  <xacro:macro_fixed_joint name="openni_camera" parent_name="base_link" x ="${kinect_x}" y="${kinect_y}" z="0.60" roll="0" pitch="0" yaw="${kinect_orient}"/>
+  <!--xacro:macro_fixed_joint name="openni_camera" parent_name="base_link" x ="0.43" y="-0.13" z="0.60" roll="0" pitch="0" yaw="0"/-->
+  <xacro:macro_fixed_joint name="openni_depth_frame" parent_name="openni_camera" x ="0" y="-0.02" z="0" roll="0" pitch="0" yaw="0"/>
+  <xacro:macro_fixed_joint name="openni_rgb_frame" parent_name="openni_camera" x ="0" y="-0.04" z="0" roll="0" pitch="0" yaw="0"/>
+  <xacro:macro_fixed_joint name="openni_depth_optical_frame" parent_name="openni_depth_frame" x ="0" y="0" z="0" roll="-1.57" pitch="0" yaw="-1.57"/>
+  <xacro:macro_fixed_joint name="openni_rgb_optical_frame" parent_name="openni_rgb_frame" x ="0" y="0" z="0" roll="-1.57" pitch="0" yaw="-1.57"/>
+
+  <xacro:macro_fixed_joint name="right_center_sonnar" parent_name="right_laser" x ="${right_sonnar_plate_length}" y="0" z="${-laser_height/2}" roll="0" pitch="0" yaw="0"/>
+  <xacro:macro_fixed_joint name="right_right_sonnar" parent_name="right_laser" x ="${right_sonnar_plate_length}" y="${-right_sonnar_plate_width/2}" z="${-laser_height/2}" roll="0" pitch="0" yaw="${-PI/4}"/>
+  <xacro:macro_fixed_joint name="right_left_sonnar" parent_name="right_laser" x ="${right_sonnar_plate_length}" y="${right_sonnar_plate_width/2}" z="${-laser_height/2}" roll="0" pitch="0" yaw="${PI/4}"/>
+
+  <xacro:macro_fixed_joint name="left_center_sonnar" parent_name="left_laser" x ="${left_sonnar_plate_length}" y="0" z="${-laser_height/2}" roll="0" pitch="0" yaw="0"/>
+  <xacro:macro_fixed_joint name="left_right_sonnar" parent_name="left_laser" x ="${left_sonnar_plate_length}" y="${-left_sonnar_plate_width/2}" z="${-laser_height/2}" roll="0" pitch="0" yaw="${-PI/4}"/>
+  <xacro:macro_fixed_joint name="left_left_sonnar" parent_name="left_laser" x ="${left_sonnar_plate_length}" y="${left_sonnar_plate_width/2}" z="${-laser_height/2}" roll="0" pitch="0" yaw="${PI/4}"/>
+
+</robot>

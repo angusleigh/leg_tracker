@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+
+<!--
+To check that you've selected the right clusters, play back the generated bagfile with the "pause" option and step through each frame to see where the red markers end up.
+-->
+
+<launch>
+  <!-- global params -->
+  <param name="min_points_per_cluster" value="3" />
+  <param name="cluster_dist_euclid" value="0.13" />
+
+   <!-- first rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters1" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_1.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_1_extracted.bag"/>
+    <param name="scan_topic" value="right_scan"/>
+    <param name="laser_frame" value="right_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="15"/> 
+    <param name="max_dist" value="5"/> 
+  </node>       
+
+  <!-- second rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters2" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_2.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_2_extracted.bag"/>
+    <param name="scan_topic" value="right_scan"/>
+    <param name="laser_frame" value="right_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="15"/> 
+    <param name="max_dist" value="5"/> 
+  </node>            
+        
+
+   <!-- third rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters3" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_3.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_3_extracted.bag"/>
+    <param name="scan_topic" value="right_scan"/>
+    <param name="laser_frame" value="right_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="15"/> 
+    <param name="max_dist" value="5"/> 
+  </node>             
+        
+
+   <!-- fourth rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters4" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_4.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_4_extracted.bag"/>
+    <param name="scan_topic" value="right_scan"/>
+    <param name="laser_frame" value="right_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="10"/> 
+    <param name="max_dist" value="5"/> 
+  </node>     
+
+
+   <!-- fifth rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters5" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_6.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_6_extracted.bag"/>
+    <param name="scan_topic" value="/rear_scan"/>
+    <param name="laser_frame" value="rear_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="15"/> 
+    <param name="max_dist" value="5"/> 
+  </node>     
+
+
+   <!-- sixth rosbag file with positive examples -->
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters6" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_not_extracted/positive_7.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=0.33/positive_7_extracted.bag"/>
+    <param name="scan_topic" value="/rear_scan"/>
+    <param name="laser_frame" value="rear_laser"/>
+    <param name="min_angle" value="-15"/> 
+    <param name="max_angle" value="15"/> 
+    <param name="max_dist" value="5"/> 
+  </node>     
+
+  
+  <!-- This is just an example showing you how you can also specify a bounding box for the positive clusters if you want. I don't think it will run because the bag files aren't there. -->
+  <!--
+  <node pkg="leg_tracker" type="extract_positive_training_clusters" name="extract_positive_training_clusters1" output="screen">
+    <param name="load_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=1.0/positive_not_extracted/positive_example.bag"/>
+    <param name="save_bag_file" value="$(find leg_tracker)/rosbags/training_scans_res=1.0/positive_example_extracted.bag"/>
+    <param name="scan_topic" value="/lasers/front_scan"/>
+    <param name="laser_frame" value="front_laser"/>
+    <param name="x_min" value ="0.0"/> 
+    <param name="x_max" value ="10.0"/> 
+    <param name="y_min" value ="-1.2"/> 
+    <param name="y_max" value ="0.5"/> 
+  </node>
+  -->
+  
+
+
+</launch>
+
