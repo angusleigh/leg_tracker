@@ -340,7 +340,7 @@ private:
                 // No objects detected in range.
                 valid_measurement = true;
               } 
-              else if( isnan(scan.ranges[closest_beam_idx]) )
+              else if( std::isnan(scan.ranges[closest_beam_idx]) )
               {
                 // This is an erroneous, invalid, or missing measurement.
                 valid_measurement = false;

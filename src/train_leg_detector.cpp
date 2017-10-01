@@ -38,9 +38,9 @@
 
 #include <boost/foreach.hpp>
 
-#include <opencv/cxcore.h>
-#include <opencv/cv.h>
-#include <opencv/ml.h>
+#include <opencv2/core/core.hpp>
+//#include <opencv2/cv.hpp>
+#include <opencv2/ml/ml.hpp>
 
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/PoseArray.h>
@@ -185,38 +185,66 @@ public:
     }
 
     CvMat* var_type = cvCreateMat( 1, feat_count_ + 1, CV_8U );
-    cvSet( var_type, cvScalarAll(CV_VAR_ORDERED));
-    cvSetReal1D( var_type, feat_count_, CV_VAR_CATEGORICAL );
+    cvSet( var_type, cvScalarAll(cv::ml::VAR_ORDERED));
+    cvSetReal1D( var_type, feat_count_, cv::ml::VAR_CATEGORICAL );
     
     // Random forest training parameters
     // One important parameter not set here is undersample_negative_factor.
     // I tried to keep the params similar to the defaults in scikit-learn
     float priors[] = {1.0, 1.0};
+    cv::Mat priors_mat = cv::Mat(1, 2, CV_32F, priors);
+    
 
-    CvRTParams fparam(
-      10000,              // max depth of tree
-      2,                  // min sample count to split tree
-      0,                  // regression accuracy (?)
-      false,              // use surrogates (?)
-      1000,               // max categories
-      priors,             // priors
-      false,              // calculate variable importance 
-      2,                  // number of active vars for each tree node (default from scikit-learn is: (int)round(sqrt(feat_count_))
-      100,                // max trees in forest (default of 10 from scikit-learn does worse)
-      0.001f,             // forest accuracy (sufficient OOB error)
-      CV_TERMCRIT_ITER    // termination criteria. CV_TERMCRIT_ITER = once we reach max number of forests
-      ); 
-       
-    forest_.train( 
-      cv_data,                // train data 
-      CV_ROW_SAMPLE,          // tflag
-      cv_resp,                // responses (i.e. labels)
-      0,                      // varldx (?)
-      0,                      // sampleldx (?)
-      var_type,               // variable type 
-      0,                      // missing data mask
-      fparam                  // parameters 
-      );                
+    // SET PARAMETERS
+    forest_->setMaxDepth(10000);                        // max depth of tree
+    forest_->setMinSampleCount(2);                      // min sample count to split tree
+    forest_->setRegressionAccuracy(0);                  // regression accuracy (?)
+    forest_->setUseSurrogates(false);                   // use surrogates (?)
+    forest_->setMaxCategories(1000);                    // max categories
+    forest_->setPriors(priors_mat);                     // priors
+    forest_->setCalculateVarImportance(false);          // calculate variable importance 
+    forest_->setActiveVarCount(2);                      // number of active vars for each tree node (default from scikit-learn is: (int)round(sqrt(feat_count_))
+    int nTrees = 100;                                   // max trees in forest (default of 10 from scikit-learn does worse)
+    forest_->setRegressionAccuracy(0.001f);             // forest accuracy (sufficient OOB error)
+    forest_->setTermCriteria(
+      cv::TermCriteria(cv::TermCriteria::MAX_ITER, nTrees, 1e-6)); // termination criteria. CV_TERMCRIT_ITER = once we reach max number of forests
+    
+
+    // cv::ml::DTrees::Params  fparam(
+    //   10000,              // max depth of tree
+    //   2,                  // min sample count to split tree
+    //   0,                  // regression accuracy (?)
+    //   false,              // use surrogates (?)
+    //   1000,               // max categories
+    //   priors,             // priors
+    //   false,              // calculate variable importance 
+    //   2,                  // number of active vars for each tree node (default from scikit-learn is: (int)round(sqrt(feat_count_))
+    //   100,                // max trees in forest (default of 10 from scikit-learn does worse)
+    //   0.001f,             // forest accuracy (sufficient OOB error)
+    //   CV_TERMCRIT_ITER    // termination criteria. CV_TERMCRIT_ITER = once we reach max number of forests
+    //   ); 
+
+    forest_->train(cv::ml::TrainData::create(
+      cv::cvarrToMat(cv_data),                // train data 
+      cv::ml::ROW_SAMPLE,     // tflag
+      cv::cvarrToMat(cv_resp)                // responses (i.e. labels)
+      // 0,                      // varldx (?)
+      // 0,                      // sampleldx (?)
+      // 0,                      // missing data mask
+      // var_type                // variable type 
+    ));
+      
+
+    // forest_.train( 
+    //   cv_data,                // train data 
+    //   CV_ROW_SAMPLE,          // tflag
+    //   cv_resp,                // responses (i.e. labels)
+    //   0,                      // varldx (?)
+    //   0,                      // sampleldx (?)
+    //   var_type,               // variable type 
+    //   0,                      // missing data mask
+    //   fparam                  // parameters 
+    //   );                
 
     cvReleaseMat(&cv_data);
     cvReleaseMat(&cv_resp);
@@ -257,7 +285,7 @@ public:
     {
       for (int k = 0; k < feat_count_; k++)
         tmp_mat->data.fl[k] = (float)((*i)[k]);
-      if (forest_.predict( tmp_mat) > 0)
+      if (forest_->predict(cv::cvarrToMat(tmp_mat)) > 0)
         correct_pos++;
     }
 
@@ -268,7 +296,7 @@ public:
     {
       for (int k = 0; k < feat_count_; k++)
         tmp_mat->data.fl[k] = (float)((*i)[k]);
-      if (forest_.predict( tmp_mat ) < 0)
+      if (forest_->predict( cv::cvarrToMat(tmp_mat) ) < 0)
         correct_neg++;
     }
 
@@ -286,12 +314,12 @@ public:
   void save()
   {
     printf("Saving classifier as: %s\n", save_file_.c_str());    
-    forest_.save(save_file_.c_str());
+    forest_->save(save_file_.c_str());
   }
 
 
 private:
-  CvRTrees forest_;
+  cv::Ptr< cv::ml::RTrees > forest_ = cv::ml::RTrees::create();
 
   int feat_count_;
 

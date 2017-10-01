@@ -40,9 +40,13 @@
 #include <sensor_msgs/LaserScan.h>
 
 // OpenCV
-#include <opencv/cxcore.h>
-#include <opencv/cv.h>
-#include <opencv/ml.h>
+// #include <opencv/cxcore.h>
+// #include <opencv/cv.h>
+// #include <opencv/ml.h>
+#include <opencv2/core/core.hpp>
+//#include <opencv2/cv.hpp>
+#include <opencv2/ml/ml.hpp>
+#include <opencv2/ml.hpp>
 
 // Local headers
 #include <leg_tracker/laser_processor.h>
@@ -95,8 +99,8 @@ public:
     ROS_INFO("max_detected_clusters: %d", max_detected_clusters_);    
 
     // Load random forst
-    forest.load(forest_file.c_str());
-    feat_count_ = forest.get_active_var_mask()->cols;
+    forest = cv::ml::StatModel::load<cv::ml::RTrees>(forest_file);
+    feat_count_ = forest->getVarCount();
 
     latest_scan_header_stamp_with_tf_available_ = ros::Time::now();
 
@@ -109,7 +113,7 @@ public:
 private:
   tf::TransformListener tfl_;
 
-  CvRTrees forest;
+  cv::Ptr< cv::ml::RTrees > forest = cv::ml::RTrees::create();
 
   int feat_count_;
 
@@ -205,7 +209,7 @@ private:
           std::vector<float> f = cf_.calcClusterFeatures(*cluster, *scan);
           for (int k = 0; k < feat_count_; k++)
             tmp_mat->data.fl[k] = (float)(f[k]);
-          float probability_of_leg = forest.predict_prob(tmp_mat);
+          float probability_of_leg = forest->predict(cv::cvarrToMat(tmp_mat));
 
           // Consider only clusters that have a confidence greater than detection_threshold_                 
           if (probability_of_leg > detection_threshold_)
@@ -308,10 +312,6 @@ private:
   };
 
 };
-
-
-
-
 
 int main(int argc, char **argv)
 {
