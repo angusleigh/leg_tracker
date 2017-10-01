@@ -1,6 +1,8 @@
 Leg Tracker
 ===========
-for ROS Indigo
+```
+![ROS](https://img.shields.io/badge/ROS-Kinetic-brightgreen.svg) ![OS](https://img.shields.io/badge/OS-Ubuntu%2016.04-orange.svg) ![OpenCV](https://img.shields.io/badge/OpenCV-3.2-blue.svg)
+```
 
 Usage
 -------------------
