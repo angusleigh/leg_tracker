@@ -553,7 +553,8 @@ class KalmanMultiTracker:
                     marker.pose.position.y = ps.point.y
                     marker.id = marker_id
                     marker_id += 1
-                    marker.type = Marker.CYLINDER
+                    marker.text = "?"
+                    marker.type = Marker.TEXT_VIEW_FACING
                     marker.scale.x = 0.05
                     marker.scale.y = 0.05
                     marker.scale.z = 0.2

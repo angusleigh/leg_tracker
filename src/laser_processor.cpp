@@ -35,90 +35,75 @@
 #include <leg_tracker/laser_processor.h>
 
 
-namespace laser_processor
-{
+namespace laser_processor{
 
-Sample* Sample::Extract(int ind, const sensor_msgs::LaserScan& scan)
-{
-  Sample* s = new Sample();
+Sample *Sample::Extract(int ind, const sensor_msgs::LaserScan &scan) {
+    Sample *s = new Sample();
 
-  s->index = ind;
-  s->range = scan.ranges[ind];
-  s->x = cos( scan.angle_min + ind*scan.angle_increment ) * s->range;
-  s->y = sin( scan.angle_min + ind*scan.angle_increment ) * s->range;
-  if (s->range > scan.range_min && s->range < scan.range_max)
-  {
-    return s;
-  }
-  else
-  {
-    delete s;
-    return NULL;
-  }
+    s->index = ind;
+    s->range = scan.ranges[ind];
+    s->x = cos(scan.angle_min + ind * scan.angle_increment) * s->range;
+    s->y = sin(scan.angle_min + ind * scan.angle_increment) * s->range;
+    
+    if (s->range > scan.range_min && s->range < scan.range_max){
+        return s;
+    }else{
+        delete s;
+        return NULL;
+    }
 }
 
-void SampleSet::clear()
-{
-  for (SampleSet::iterator i = begin(); i != end(); ++i)
-    delete (*i);
-  std::set<Sample*, CompareSample>::clear();
+void SampleSet::clear() {
+    for (SampleSet::iterator i = begin(); i != end(); ++i){
+        delete (*i);
+    }
+    std::set<Sample *, CompareSample>::clear();
 }
 
+tf::Point SampleSet::getPosition(){
+    float x_mean = 0.0;
+    float y_mean = 0.0;
+    
+    for (iterator i = begin(); i != end(); ++i){
+        x_mean += ((*i)->x)/size();
+        y_mean += ((*i)->y)/size();
+    }
 
-tf::Point SampleSet::getPosition()
-{
-  float x_mean = 0.0;
-  float y_mean = 0.0;
-  for (iterator i = begin(); i != end(); ++i)
-  {
-    x_mean += ((*i)->x)/size();
-    y_mean += ((*i)->y)/size();
-  }
-
-  return tf::Point (x_mean, y_mean, 0.0);
+    return tf::Point (x_mean, y_mean, 0.0);
 }
 
+ScanProcessor::ScanProcessor(const sensor_msgs::LaserScan &scan){
+    scan_ = scan;
+    SampleSet *cluster = new SampleSet;
 
-ScanProcessor::ScanProcessor(const sensor_msgs::LaserScan& scan) 
-{
-  scan_ = scan;
+    for (int i = 0; i < scan.ranges.size(); i++){
+        Sample *s = Sample::Extract(i, scan);
 
-  SampleSet* cluster = new SampleSet;
+        if (s != NULL) {
+            cluster->insert(s);
+        }
+    }
 
-  for (int i = 0; i < scan.ranges.size(); i++)
-  {
-    Sample* s = Sample::Extract(i, scan);
-
-    if (s != NULL)
-      cluster->insert(s);
-  }
-
-  clusters_.push_back(cluster);
+    clusters_.push_back(cluster);
 }
 
-ScanProcessor::~ScanProcessor()
-{
-  for ( std::list<SampleSet*>::iterator c = clusters_.begin(); c != clusters_.end(); ++c)
+ScanProcessor::~ScanProcessor() {
+  for (std::list<SampleSet *>::iterator c = clusters_.begin(); c != clusters_.end(); ++c) {
     delete (*c);
+  }
 }
 
-void ScanProcessor::removeLessThan(uint32_t num)
-{
-  std::list<SampleSet*>::iterator c_iter = clusters_.begin();
-  while (c_iter != clusters_.end())
-  {
-    if ( (*c_iter)->size() < num )
-    {
+void ScanProcessor::removeLessThan(uint32_t num) {
+  std::list<SampleSet *>::iterator c_iter = clusters_.begin();
+  while (c_iter != clusters_.end()){
+    if ((*c_iter)->size() < num){
       delete (*c_iter);
       clusters_.erase(c_iter++);
-    } 
-    else 
-    {
+    }else{
       ++c_iter;
     }
   }
 }
-
 
 void ScanProcessor::splitConnected(float thresh)
 {

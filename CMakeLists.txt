@@ -27,6 +27,8 @@ add_message_files(
   PersonArray.msg
   Leg.msg
   LegArray.msg
+  Cluster.msg
+  ClusterArray.msg
 )
 
 generate_messages(   
