@@ -1,0 +1,3 @@
+<launch>
+    <param name="robot_description" command="cat $(find leg_tracker)/urdf/robogame.urdf" />
+</launch>
