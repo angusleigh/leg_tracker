@@ -53,12 +53,6 @@ public:
   */
   std::vector<float> calcClusterFeatures(const laser_processor::SampleSet* cluster, const sensor_msgs::LaserScan& scan);
 
-  /**
-  * @brief Calculate EM Gaussian Feature  of a cluster of scan points
-  * @params cluster Cluster of interest
-  * @params scan Scan containing the cluster
-  */
-  std::vector<geometry_msgs::Point> calcEMClusterFeatures(const laser_processor::SampleSet *cluster, const sensor_msgs::LaserScan &scan); 
 };
 
 
