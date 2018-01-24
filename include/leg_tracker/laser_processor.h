@@ -92,7 +92,8 @@ struct CompareSample
 *
 * Ordered based on sample index
 */
-class SampleSet : public std::set<Sample*, CompareSample>{
+class SampleSet : public std::set<Sample*, CompareSample>
+{
 public:
   /**
   * @brief Destructor

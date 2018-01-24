@@ -139,9 +139,7 @@ class ObjectTracked:
         # We include an "if" structure to exclude small distance changes, 
         # which are likely to have been caused by changes in observation angle
         # or other similar factors, and not due to the object actually moving
-        delta_dist_travelled = ((self.pos_x - self.filtered_state_means[0])**2 + 
-                                (self.pos_y - self.filtered_state_means[1])**2)**(1./2.) 
-                                
+        delta_dist_travelled = ((self.pos_x - self.filtered_state_means[0])**2 + (self.pos_y - self.filtered_state_means[1])**2)**(1./2.) 
         if delta_dist_travelled > 0.01: 
             self.dist_travelled += delta_dist_travelled
 
@@ -183,7 +181,7 @@ class KalmanMultiTracker:
         self.use_scan_header_stamp_for_tfs = rospy.get_param("use_scan_header_stamp_for_tfs", False)
         self.publish_detected_people = rospy.get_param("display_detected_people", False)        
         self.dist_travelled_together_to_initiate_leg_pair = rospy.get_param("dist_travelled_together_to_initiate_leg_pair", 0.5)
-        scan_topic = rospy.get_param("scan_topic", "scan")
+        scan_topic = rospy.get_param("scan_topic", "scan");
         self.scan_frequency = rospy.get_param("scan_frequency", 7.5)
         self.in_free_space_threshold = rospy.get_param("in_free_space_threshold", 0.06)
         self.confidence_percentile = rospy.get_param("confidence_percentile", 0.90)
@@ -219,7 +217,7 @@ class KalmanMultiTracker:
         Determine the degree to which the position (x,y) is in freespace according to our local map
 
         @rtype:     float
-        @return:    degree to which the position (x,y) is in freespace ( in range: [0,1])
+        @return:    degree to which the position (x,y) is in freespace (range: 0.-1.)
         """
         # If we haven't got the local map yet, assume nothing's in freespace
         if self.local_map == None:
@@ -232,7 +230,7 @@ class KalmanMultiTracker:
         # Take the average of the local map's values centred at (map_x, map_y), with a kernal size of <kernel_size>
         # If called repeatedly on the same local_map, this could be sped up with a sum-table
         sum = 0
-        kernel_size = 2
+        kernel_size = 2;
         for i in xrange(map_x-kernel_size, map_x+kernel_size):
             for j in xrange(map_y-kernel_size, map_y+kernel_size):
                 if i + j*self.local_map.info.height < len(self.local_map.data):
@@ -555,8 +553,7 @@ class KalmanMultiTracker:
                     marker.pose.position.y = ps.point.y
                     marker.id = marker_id
                     marker_id += 1
-                    marker.text = "?"
-                    marker.type = Marker.TEXT_VIEW_FACING
+                    marker.type = Marker.CYLINDER
                     marker.scale.x = 0.05
                     marker.scale.y = 0.05
                     marker.scale.z = 0.2

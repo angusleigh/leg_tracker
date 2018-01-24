@@ -35,10 +35,8 @@
 #ifndef CLUSTERFEATURES_HH
 #define CLUSTERFEATURES_HH
 
-#include <leg_tracker/laser_processor.h>
-#include <geometry_msgs/Point.h>
+#include "laser_processor.h"
 #include <sensor_msgs/LaserScan.h>
-#include <vector>
 
 /**
 * @brief Calculate the geometric features of a cluster of scan points
@@ -51,8 +49,7 @@ public:
   * @params cluster Cluster of interest
   * @params scan Scan containing the cluster
   */
-  std::vector<float> calcClusterFeatures(const laser_processor::SampleSet* cluster, const sensor_msgs::LaserScan& scan);
-
+  std::vector<float> calcClusterFeatures(const laser_processor::SampleSet* cluster, const sensor_msgs::LaserScan& scan);  
 };
 
 
