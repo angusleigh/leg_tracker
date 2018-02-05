@@ -1,26 +1,26 @@
 Leg Tracker
 ===========
-for ROS Indigo
+![ROS](https://img.shields.io/badge/ROS-Kinetic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2016.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-3.2-blue.svg)
 
 Usage
 -------------------
 - clone leg_tracker repo into your indigo catkin source directory
-- install SciPy: 
+- install SciPy:
     - $ sudo apt-get install python-scipy
-- install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman): 
+- install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
     - $ sudo pip install pykalman
 - install munkres for Python:
     - $ sudo pip install munkres
 - $ cd [your catkin_workspace]
 - $ catkin_make
-- $ roslaunch leg_tracker joint_leg_tracker.launch 
+- $ roslaunch leg_tracker joint_leg_tracker.launch
 
 
 Demos
 -------------------
 - try $ roslaunch leg_tracker demo_stationary_simple_environment.launch to see a demo of it working on a stationary robot.
 - there are a bunch more demo launch files in the /launch directory.
-- video: [youtu.be/F2Qx3O5AyBs](https://www.youtube.com/watch?v=F2Qx3O5AyBs), which also includes a brief explaination of the method. 
+- video: [youtu.be/F2Qx3O5AyBs](https://www.youtube.com/watch?v=F2Qx3O5AyBs), which also includes a brief explaination of the method.
 
 
 Subscribed topics
@@ -33,7 +33,7 @@ Subscribed topics
 
 Published topics
 -------------------
-- /people_tracked 
+- /people_tracked
     - the positions and velocities of the tracked people as a PersonArray message (see: leg_tracker/msg/PersonArray.msg for the message specification).
 - /visualization_marker
     - markers for the tracked people, other tracked objects and the centroids of the detected clusters.
@@ -61,11 +61,11 @@ Other parameters
 - min_points_per_cluster
     - Minimum scan points for a cluster to be valid. If a cluster has less than this, then we assume it's noise and delete it. Default: 3.
 - max_detect_distance
-    - Maximum distance from laser scanner to consider detected clusters. Farther is better but decreases run speed. Default: 10.0 (m). 
+    - Maximum distance from laser scanner to consider detected clusters. Farther is better but decreases run speed. Default: 10.0 (m).
 - max_leg_pairing_dist
     - Maximum separation of legs. Legs further apart than this distance will not be matched. Default: 0.8 (m).
 - confidence_threshold_to_maintain_track
-    - How high the confidence needs to be of the current track's leg shape to initiate and maintain a person track. Higher values will yield lower false positive people tracks and lower values higher false negatives. Will likely need re-tuning if you retrain the leg detector. Default: 0.1. 
+    - How high the confidence needs to be of the current track's leg shape to initiate and maintain a person track. Higher values will yield lower false positive people tracks and lower values higher false negatives. Will likely need re-tuning if you retrain the leg detector. Default: 0.1.
 - publish_occluded
     - If people who weren't seen in the previous scan should be published to the /people_tracked topic. Default: True.
 - use_scan_header_stamp_for_tfs
@@ -75,7 +75,7 @@ Other parameters
 - dist_travelled_together_to_initiate_leg_pair
     - How far a candidate leg pair must travel to initiate a person track. Default: 0.5 (m).
 - in_free_space_threshold
-    - A threshold to determine whether a track should be considered in free space or occupied space. Default: 0.06. 
+    - A threshold to determine whether a track should be considered in free space or occupied space. Default: 0.06.
 - confidence_percentile
     - Confidence percentile for matching of clusters to tracks. Larger confidence percentile generates larger gates for the tracks to match to new clusters. You should be able to view the size of the gates in Rviz as circular visualization markers. Default: 0.9.
 - max_std
@@ -93,13 +93,13 @@ Retraining the leg detector
 - record scan data in a rosbag.
 - run extract_positive_training_clusters.launch on the recorded data to have it automatically annotate where the legs are in the scans. It will put a marker on any clusters that fall within the specified bounding box. You can check if the right clusters have been annotated by playing back the generated rosbag with the "--pause" option and stepping through it and visually checking in Rviz where the markers lie in the scan.
 - gather negative examples by moving the scanner on a moble platform around empty rooms.
-- run train_leg_detector and include the positive and negative examples as command line arguments (see the train_leg_detector.launch for an example). 
+- run train_leg_detector and include the positive and negative examples as command line arguments (see the train_leg_detector.launch for an example).
 - a .yaml file will be output with the name of the "save_file" parameter in the train_leg_detector launch file.
 - set the launch file for the joint_leg_tracker to load the .yaml file you produced.
 - when running the joint_leg_tracker with your new detector, you will likely need to retune the "confidence_threshold_to_maintain_track" parameter so you get the desired tradeoff between false positive/false negative person tracks.
 
 
-Under the hood 
+Under the hood
 -------------------
 **Files for running**
 
@@ -123,7 +123,7 @@ Speedups
 
 Acknowledgement
 -------------------
-We used some code from the leg_detector package: http://wiki.ros.org/leg_detector. 
+We used some code from the leg_detector package: http://wiki.ros.org/leg_detector.
 It does fundamentally the same task, but we found this version was more capable of tracking people longer, not mismatching people and producing less false positives in cases where a grid occupancy map is not provided a priori. See the reference paper and the leg_tracker_benchmarks repo for more details.
 
 

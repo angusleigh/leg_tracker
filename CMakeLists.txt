@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(leg_tracker)
 
+set(CMAKE_CXX_FLAGS "-std=c++11")
+find_package(Boost REQUIRED system thread)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+add_definitions(${Boost_DEFINITIONS})
+if(NOT Boost_FOUND)
+    message(ERROR " Boost not found!")
+endif(NOT Boost_FOUND)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
