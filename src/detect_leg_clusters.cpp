@@ -209,7 +209,11 @@ private:
           std::vector<float> f = cf_.calcClusterFeatures(*cluster, *scan);
           for (int k = 0; k < feat_count_; k++)
             tmp_mat->data.fl[k] = (float)(f[k]);
-          float probability_of_leg = forest->predict(cv::cvarrToMat(tmp_mat));
+          cv::Mat result;
+          forest->getVotes(cv::cvarrToMat(tmp_mat), result, 0);
+          int positive_votes = result.at<int>(1, 1);
+          int negative_votes = result.at<int>(1, 0);
+          float probability_of_leg = positive_votes / static_cast<double>(negative_votes);
 
           // Consider only clusters that have a confidence greater than detection_threshold_                 
           if (probability_of_leg > detection_threshold_)
