@@ -213,7 +213,7 @@ private:
           forest->getVotes(cv::cvarrToMat(tmp_mat), result, 0);
           int positive_votes = result.at<int>(1, 1);
           int negative_votes = result.at<int>(1, 0);
-          float probability_of_leg = positive_votes / static_cast<double>(negative_votes);
+          float probability_of_leg = positive_votes / static_cast<double>(positive_votes + negative_votes);
 
           // Consider only clusters that have a confidence greater than detection_threshold_                 
           if (probability_of_leg > detection_threshold_)
