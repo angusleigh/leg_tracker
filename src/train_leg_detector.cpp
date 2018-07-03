@@ -196,7 +196,7 @@ public:
     
 
     // SET PARAMETERS
-    forest_->setMaxDepth(10000);                        // max depth of tree
+    forest_->setMaxDepth(20);                           // max depth of tree
     forest_->setMinSampleCount(2);                      // min sample count to split tree
     forest_->setRegressionAccuracy(0);                  // regression accuracy (?)
     forest_->setUseSurrogates(false);                   // use surrogates (?)
