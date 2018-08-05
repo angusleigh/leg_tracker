@@ -126,6 +126,9 @@ Acknowledgement
 We used some code from the leg_detector package: http://wiki.ros.org/leg_detector.
 It does fundamentally the same task, but we found this version was more capable of tracking people longer, not mismatching people and producing less false positives in cases where a grid occupancy map is not provided a priori. See the reference paper and the leg_tracker_benchmarks repo for more details.
 
+License
+-------------------
+The entire repo is released under a BSD license. The source files forked from the leg_detector package maintain their BSD licenses (2008, Willow Garage, Inc.) in their respective files. All other files are covered by the LICENSE in the root of this repo.
 
 TODO
 -------------------
@@ -133,7 +136,6 @@ TODO
 - use BFL's kalman filter in place of pykalman so users aren't required to install the external dependancy
 - use a C++ version of munkres in place of python's munkres so users aren't required to install the external dependancy
 - integrate a priori occupancy grid maps or SLAM gmapping maps to speed up detection and reduce false positives
-
 
 Reference
 -------------------
