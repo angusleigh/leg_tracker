@@ -1,10 +1,10 @@
 Leg Tracker
 ===========
-![ROS](https://img.shields.io/badge/ROS-Kinetic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2016.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-3.4-blue.svg)
+![ROS](https://img.shields.io/badge/ROS-Melodic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2016.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-3.4-blue.svg)
 
 Usage
 -------------------
-- clone leg_tracker repo into your indigo catkin source directory
+- clone leg_tracker repo into your melodic catkin source directory
 - install SciPy:
     - $ sudo apt-get install python-scipy
 - install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
