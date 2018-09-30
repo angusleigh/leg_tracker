@@ -40,11 +40,7 @@
 #include <sensor_msgs/LaserScan.h>
 
 // OpenCV
-// #include <opencv/cxcore.h>
-// #include <opencv/cv.h>
-// #include <opencv/ml.h>
 #include <opencv2/core/core.hpp>
-//#include <opencv2/cv.hpp>
 #include <opencv2/ml/ml.hpp>
 #include <opencv2/ml.hpp>
 
@@ -209,11 +205,18 @@ private:
           std::vector<float> f = cf_.calcClusterFeatures(*cluster, *scan);
           for (int k = 0; k < feat_count_; k++)
             tmp_mat->data.fl[k] = (float)(f[k]);
-          cv::Mat result;
-          forest->getVotes(cv::cvarrToMat(tmp_mat), result, 0);
-          int positive_votes = result.at<int>(1, 1);
-          int negative_votes = result.at<int>(1, 0);
-          float probability_of_leg = positive_votes / static_cast<double>(positive_votes + negative_votes);
+
+          
+          #if (CV_VERSION_MAJOR <= 3 && CV_VERSION_MINOR <= 2)
+            float probability_of_leg = forest->predict(cv::cvarrToMat(tmp_mat));
+          #else
+            // The forest->predict funciton has been removed in the latest versions of OpenCV so we'll do the calculation explicitly.
+            cv::Mat result;
+            forest->getVotes(cv::cvarrToMat(tmp_mat), result, 0);
+            int positive_votes = result.at<int>(1, 1);
+            int negative_votes = result.at<int>(1, 0);
+            float probability_of_leg = positive_votes / static_cast<double>(positive_votes + negative_votes);
+          #endif
 
           // Consider only clusters that have a confidence greater than detection_threshold_                 
           if (probability_of_leg > detection_threshold_)
