@@ -103,7 +103,7 @@ public:
     // ROS subscribers + publishers
     scan_sub_ =  nh_.subscribe(scan_topic, 10, &DetectLegClusters::laserCallback, this);
     markers_pub_ = nh_.advertise<visualization_msgs::Marker>("visualization_marker", 20);
-    detected_leg_clusters_pub_ = nh_.advertise<leg_tracker::LegArray>("detected_leg_clusters",20);
+    detected_leg_clusters_pub_ = nh_.advertise<leg_tracker::LegArray>("detected_leg_clusters", 20);
   }
 
 private:
@@ -208,7 +208,8 @@ private:
 
           
           #if (CV_VERSION_MAJOR <= 3 && CV_VERSION_MINOR <= 2)
-            float probability_of_leg = forest->predict(cv::cvarrToMat(tmp_mat));
+            // Output of forest->predict is [-1.0, 1.0] so we scale to reach [0.0, 1.0]
+            float probability_of_leg = 0.5 * (1.0 + forest->predict(cv::cvarrToMat(tmp_mat)));
           #else
             // The forest->predict funciton has been removed in the latest versions of OpenCV so we'll do the calculation explicitly.
             cv::Mat result;
