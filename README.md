@@ -2,6 +2,7 @@ Leg Tracker
 ===========
 ![ROS](https://img.shields.io/badge/ROS-Melodic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2018.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-3.4-blue.svg)
 
+
 Usage
 -------------------
 - clone leg_tracker repo into your melodic catkin source directory
@@ -9,8 +10,6 @@ Usage
     - $ sudo apt-get install python-scipy
 - install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
     - $ sudo pip install pykalman
-- install munkres for Python:
-    - $ sudo pip install munkres
 - $ cd [your catkin_workspace]
 - $ catkin_make
 - $ roslaunch leg_tracker joint_leg_tracker.launch
@@ -116,26 +115,23 @@ Under the hood
 - src/train_leg_detector.cpp - train the random forest classifier using the positive example clusters and negative scans examples.
 
 
-Speedups
--------------------
-- I found using this version of munkres, which is based on numpy, sped up the data association matching a little bit: https://github.com/ben-eysenbach/munkres
-
-
 Acknowledgement
 -------------------
 We used some code from the leg_detector package: http://wiki.ros.org/leg_detector.
 It does fundamentally the same task, but we found this version was more capable of tracking people longer, not mismatching people and producing less false positives in cases where a grid occupancy map is not provided a priori. See the reference paper and the leg_tracker_benchmarks repo for more details.
 
+
 License
 -------------------
 The entire repo is released under a BSD license. The source files forked from the leg_detector package maintain their BSD licenses (2008, Willow Garage, Inc.) in their respective files. All other files are covered by the LICENSE in the root of this repo.
+
 
 TODO
 -------------------
 - port tracker to C++ to improve speed
 - use BFL's kalman filter in place of pykalman so users aren't required to install the external dependancy
-- use a C++ version of munkres in place of python's munkres so users aren't required to install the external dependancy
 - integrate a priori occupancy grid maps or SLAM gmapping maps to speed up detection and reduce false positives
+
 
 Reference
 -------------------
