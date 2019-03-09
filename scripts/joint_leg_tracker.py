@@ -14,6 +14,7 @@ from nav_msgs.msg import OccupancyGrid
 import numpy as np
 import random
 import math
+from scipy.optimize import linear_sum_assignment
 import scipy.stats
 import scipy.spatial
 from geometry_msgs.msg import PointStamped, Point
@@ -24,9 +25,7 @@ import message_filters
 import sys
 
 # External modules
-from munkres import Munkres # For the minimum matching assignment problem. To install: https://pypi.python.org/pypi/munkres 
 from pykalman import KalmanFilter # To install: http://pykalman.github.io/#installation
-
 
 
 class DetectedCluster:
@@ -276,13 +275,12 @@ class KalmanMultiTracker:
 
         # Run munkres on match_dist to get the lowest cost assignment
         if match_dist:
-            munkres = Munkres()
-            # self.pad_matrix(match_dist, pad_value=self.max_cost) # I found no difference when padding it 
-            indexes = munkres.compute(match_dist)
-            for elig_detect_index, track_index in indexes:
-                if match_dist[elig_detect_index][track_index] < self.mahalanobis_dist_gate:
-                    detect = eligable_detections[elig_detect_index]
-                    track = objects_tracked[track_index]
+            # self.pad_matrix(match_dist, pad_value=self.max_cost) # TODO: Check              
+            elig_detect_indexes, track_indexes = linear_sum_assignment(match_dist)
+            for elig_detect_idx, track_idx in zip(elig_detect_indexes, track_indexes):
+                if match_dist[elig_detect_idx][track_idx] < self.mahalanobis_dist_gate:
+                    detect = eligable_detections[elig_detect_idx]
+                    track = objects_tracked[track_idx]
                     matched_tracks[track] = detect
 
         return matched_tracks
