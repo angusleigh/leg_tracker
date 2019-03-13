@@ -275,7 +275,6 @@ class KalmanMultiTracker:
 
         # Run munkres on match_dist to get the lowest cost assignment
         if match_dist:
-            # self.pad_matrix(match_dist, pad_value=self.max_cost) # TODO: Check              
             elig_detect_indexes, track_indexes = linear_sum_assignment(match_dist)
             for elig_detect_idx, track_idx in zip(elig_detect_indexes, track_indexes):
                 if match_dist[elig_detect_idx][track_idx] < self.mahalanobis_dist_gate:
