@@ -319,8 +319,8 @@ private:
             {
               // Find applicable laser measurement
               double closest_beam_angle = round(angle/scan.angle_increment)*scan.angle_increment;
-              int closest_beam_idx_without_bounds_check = round(angle/scan.angle_increment) + scan.ranges.size()/2;
-              int closest_beam_idx = std::max(0, std::min(scan.ranges.size() - 1, closest_beam_idx_without_bounds_check);
+              int idx_without_bounds_check = round(angle/scan.angle_increment) + scan.ranges.size()/2;
+              int closest_beam_idx = std::max(0, std::min(static_cast<int>(scan.ranges.size() - 1), idx_without_bounds_check));
               is_human = is_sample_human[closest_beam_idx];
 
               // Processing the range value of the closest_beam to determine if it's a valid measurement or not. 
