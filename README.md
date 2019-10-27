@@ -5,19 +5,19 @@ Leg Tracker
 
 Usage
 -------------------
-- clone leg_tracker repo into your melodic catkin source directory
+- `cd ~/catkin_ws/src`
+- `git clone git clone git@github.com:angusleigh/leg_tracker.git`
 - install SciPy:
-    - $ sudo apt-get install python-scipy
+    - `sudo apt install python-scipy`
 - install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
-    - $ sudo pip install pykalman
-- $ cd [your catkin_workspace]
-- $ catkin_make
-- $ roslaunch leg_tracker joint_leg_tracker.launch
+    - `sudo pip install pykalman`
+- `catkin_make`
+- `roslaunch leg_tracker joint_leg_tracker.launch`
 
 
 Demos
 -------------------
-- try $ roslaunch leg_tracker demo_stationary_simple_environment.launch to see a demo of it working on a stationary robot.
+- try `roslaunch leg_tracker demo_stationary_simple_environment.launch` to see a demo of it working on a stationary robot.
 - there are a bunch more demo launch files in the /launch directory.
 - video: [youtu.be/F2Qx3O5AyBs](https://www.youtube.com/watch?v=F2Qx3O5AyBs), which also includes a brief explaination of the method.
 
