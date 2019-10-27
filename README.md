@@ -11,6 +11,7 @@ Usage
     - `sudo apt install python-scipy`
 - install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
     - `sudo pip install pykalman`
+- `cd ~/catkin_ws`    
 - `catkin_make`
 - `roslaunch leg_tracker joint_leg_tracker.launch`
 
