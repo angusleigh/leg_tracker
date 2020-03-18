@@ -6,7 +6,7 @@ Leg Tracker
 Usage
 -------------------
 - `cd ~/catkin_ws/src`
-- `git clone git clone git@github.com:angusleigh/leg_tracker.git`
+- `git clone git@github.com:angusleigh/leg_tracker.git`
 - install SciPy:
     - `sudo apt install python-scipy`
 - install pykalman (http://pykalman.github.io/#installation or https://pypi.python.org/pypi/pykalman):
