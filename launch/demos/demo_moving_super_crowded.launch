@@ -6,7 +6,7 @@
   <param name="fixed_frame" value="odom"/>
   <param name="scan_frequency" value="7.5"/>  
   <param name="max_detect_distance" value="4.0"/>
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find leg_tracker)/urdf/FRMI_model.urdf.xacro'" />
+  <param name="robot_description" command="xacro --inorder '$(find leg_tracker)/urdf/FRMI_model.urdf.xacro'" />
 
   
   

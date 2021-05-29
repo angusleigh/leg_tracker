@@ -79,7 +79,7 @@ class ObjectTracked:
         elif scan_frequency > 14.99 and scan_frequency < 15.01:
             std_process_noise = 0.03333
         else:
-            print "Scan frequency needs to be either 7.5, 10 or 15 or the standard deviation of the process noise needs to be tuned to your scanner frequency"
+            print("Scan frequency needs to be either 7.5, 10 or 15 or the standard deviation of the process noise needs to be tuned to your scanner frequency")
         std_pos = std_process_noise
         std_vel = std_process_noise
         std_obs = 0.1
@@ -230,8 +230,8 @@ class KalmanMultiTracker:
         # If called repeatedly on the same local_map, this could be sped up with a sum-table
         sum = 0
         kernel_size = 2;
-        for i in xrange(map_x-kernel_size, map_x+kernel_size):
-            for j in xrange(map_y-kernel_size, map_y+kernel_size):
+        for i in range(map_x-kernel_size, map_x+kernel_size):
+            for j in range(map_y-kernel_size, map_y+kernel_size):
                 if i + j*self.local_map.info.height < len(self.local_map.data):
                     sum += self.local_map.data[i + j*self.local_map.info.height]
                 else:  
@@ -589,7 +589,7 @@ class KalmanMultiTracker:
                     # self.marker_pub.publish(marker)
 
             # Clear previously published track markers
-            for m_id in xrange(marker_id, self.prev_track_marker_id):
+            for m_id in range(marker_id, self.prev_track_marker_id):
                 marker = Marker()
                 marker.header.stamp = now                
                 marker.header.frame_id = self.publish_people_frame
@@ -742,7 +742,7 @@ class KalmanMultiTracker:
                         self.marker_pub.publish(marker)                
 
         # Clear previously published people markers
-        for m_id in xrange(marker_id, self.prev_person_marker_id):
+        for m_id in range(marker_id, self.prev_person_marker_id):
             marker = Marker()
             marker.header.stamp = now                
             marker.header.frame_id = self.publish_people_frame

@@ -5,9 +5,8 @@
   <param name="scan_topic" value="/right_scan" />
   <param name="fixed_frame" value="right_laser"/>
   <param name="scan_frequency" value="7.5"/>  
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find leg_tracker)/urdf/FRMI_model.urdf.xacro'" />
+  <param name="robot_description" command="xacro --inorder '$(find leg_tracker)/urdf/FRMI_model.urdf.xacro'" />
 
-  
   
   <!-- run detect_leg_clusters -->  
   <node pkg="leg_tracker" type="detect_leg_clusters" name="detect_leg_clusters" output="screen"/>

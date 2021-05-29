@@ -21,6 +21,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+find_package(OpenCV 4 REQUIRED)
+
 add_message_files(
   FILES
   Person.msg

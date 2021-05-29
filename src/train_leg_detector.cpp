@@ -104,7 +104,7 @@ public:
       {
         char* rosbag_file = argv[++i]; 
         char* scan_topic = argv[++i];
-        loadNegData(rosbag_file, scan_topic, train_neg_data_);
+        loadNegData(rosbag_file, scan_topic, train_neg_data_);        
       }
       else if (!strcmp(argv[i],"--test_pos"))
       {
@@ -154,8 +154,8 @@ public:
     int sample_size = train_pos_data_.size() + train_neg_data_.size();
     feat_count_ = train_pos_data_[0].size();
 
-    CvMat* cv_data = cvCreateMat( sample_size, feat_count_, CV_32FC1);
-    CvMat* cv_resp = cvCreateMat( sample_size, 1, CV_32S);
+    cv::Mat cv_data(sample_size, feat_count_, CV_32F);
+    cv::Mat cv_resp(sample_size, 1, CV_32S);
 
     // Put positive data in opencv format.
     int j = 0;
@@ -163,11 +163,10 @@ public:
          i != train_pos_data_.end();
          i++)
     {
-      float* data_row = (float*)(cv_data->data.ptr + cv_data->step*j);
       for (int k = 0; k < feat_count_; k++)
-        data_row[k] = (*i)[k];
+        cv_data.at<float>(j, k) = (*i)[k];
       
-      cv_resp->data.i[j] = 1;
+      cv_resp.at<int>(j) = 1;
       j++;
     }
 
@@ -176,23 +175,18 @@ public:
          i != train_neg_data_.end();
          i++)
     {
-      float* data_row = (float*)(cv_data->data.ptr + cv_data->step*j);
       for (int k = 0; k < feat_count_; k++)
-        data_row[k] = (*i)[k];
-      
-      cv_resp->data.i[j] = -1;
+        cv_data.at<float>(j, k) = (*i)[k];      
+
+      cv_resp.at<int>(j) = -1;      
       j++;
     }
 
-    CvMat* var_type = cvCreateMat( 1, feat_count_ + 1, CV_8U );
-    cvSet( var_type, cvScalarAll(cv::ml::VAR_ORDERED));
-    cvSetReal1D( var_type, feat_count_, cv::ml::VAR_CATEGORICAL );
-    
     // Random forest training parameters
     // One important parameter not set here is undersample_negative_factor.
     // I tried to keep the params similar to the defaults in scikit-learn
-    float priors[] = {1.0, 1.0};
-    cv::Mat priors_mat = cv::Mat(1, 2, CV_32F, priors);
+    double priors[] = {1.0, 1.0};
+    cv::Mat priors_mat = cv::Mat(1, 2, CV_64F, priors);
     
 
     // SET PARAMETERS
@@ -208,47 +202,14 @@ public:
     forest_->setRegressionAccuracy(0.001f);             // forest accuracy (sufficient OOB error)
     forest_->setTermCriteria(
       cv::TermCriteria(cv::TermCriteria::MAX_ITER, nTrees, 1e-6)); // termination criteria. CV_TERMCRIT_ITER = once we reach max number of forests
-    
 
-    // cv::ml::DTrees::Params  fparam(
-    //   10000,              // max depth of tree
-    //   2,                  // min sample count to split tree
-    //   0,                  // regression accuracy (?)
-    //   false,              // use surrogates (?)
-    //   1000,               // max categories
-    //   priors,             // priors
-    //   false,              // calculate variable importance 
-    //   2,                  // number of active vars for each tree node (default from scikit-learn is: (int)round(sqrt(feat_count_))
-    //   100,                // max trees in forest (default of 10 from scikit-learn does worse)
-    //   0.001f,             // forest accuracy (sufficient OOB error)
-    //   CV_TERMCRIT_ITER    // termination criteria. CV_TERMCRIT_ITER = once we reach max number of forests
-    //   ); 
-
-    forest_->train(cv::ml::TrainData::create(
-      cv::cvarrToMat(cv_data),                // train data 
+    const auto train_data = cv::ml::TrainData::create(
+      cv_data,                // train data 
       cv::ml::ROW_SAMPLE,     // tflag
-      cv::cvarrToMat(cv_resp)                // responses (i.e. labels)
-      // 0,                      // varldx (?)
-      // 0,                      // sampleldx (?)
-      // 0,                      // missing data mask
-      // var_type                // variable type 
-    ));
-      
+      cv_resp                // responses (i.e. labels)
+     );
 
-    // forest_.train( 
-    //   cv_data,                // train data 
-    //   CV_ROW_SAMPLE,          // tflag
-    //   cv_resp,                // responses (i.e. labels)
-    //   0,                      // varldx (?)
-    //   0,                      // sampleldx (?)
-    //   var_type,               // variable type 
-    //   0,                      // missing data mask
-    //   fparam                  // parameters 
-    //   );                
-
-    cvReleaseMat(&cv_data);
-    cvReleaseMat(&cv_resp);
-    cvReleaseMat(&var_type);
+    forest_->train(train_data);
   }
 
 
@@ -276,7 +237,7 @@ public:
     int correct_pos = 0;
     int correct_neg = 0;
 
-    CvMat* tmp_mat = cvCreateMat(1,feat_count_,CV_32FC1);
+    cv::Mat tmp_mat(1, feat_count_, CV_32F);
 
     // test on positive examples
     for (std::vector< std::vector<float> >::const_iterator i = pos_data.begin();
@@ -284,8 +245,8 @@ public:
          i++)
     {
       for (int k = 0; k < feat_count_; k++)
-        tmp_mat->data.fl[k] = (float)((*i)[k]);
-      if (forest_->predict(cv::cvarrToMat(tmp_mat)) > 0)
+        tmp_mat.at<float>(k) = (*i)[k];
+      if (forest_->predict(tmp_mat) > 0)
         correct_pos++;
     }
 
@@ -295,16 +256,14 @@ public:
          i++)
     {
       for (int k = 0; k < feat_count_; k++)
-        tmp_mat->data.fl[k] = (float)((*i)[k]);
-      if (forest_->predict( cv::cvarrToMat(tmp_mat) ) < 0)
+        tmp_mat.at<float>(k) = (*i)[k];
+      if (forest_->predict(tmp_mat) < 0)
         correct_neg++;
     }
 
-    printf("   Positive: %d/%d \t\t Error: %g%%\n", correct_pos, (int)pos_data.size(), 100.0 - 100.0*(float)(correct_pos)/(int)pos_data.size());
-    printf("   Negative: %d/%d \t\t Error: %g%%\n", correct_neg, (int)neg_data.size(), 100.0 - 100.0*(float)(correct_neg)/(int)neg_data.size());
-    printf("   Combined: %d/%d \t\t Error: %g%%\n\n", correct_pos + correct_neg, (int)pos_data.size() + (int)neg_data.size(), 100.0 - 100.0*(float)(correct_pos + correct_neg)/((int)pos_data.size() + (int)neg_data.size()));
-
-    cvReleaseMat(&tmp_mat);    
+    printf("   Positive: %d/%d \t\t Error: %g%%\n", correct_pos, (int)pos_data.size(), 100.0 - 100.0*(double)(correct_pos)/(int)pos_data.size());
+    printf("   Negative: %d/%d \t\t Error: %g%%\n", correct_neg, (int)neg_data.size(), 100.0 - 100.0*(double)(correct_neg)/(int)neg_data.size());
+    printf("   Combined: %d/%d \t\t Error: %g%%\n\n", correct_pos + correct_neg, (int)pos_data.size() + (int)neg_data.size(), 100.0 - 100.0*(double)(correct_pos + correct_neg)/((int)pos_data.size() + (int)neg_data.size()));
   }
 
 

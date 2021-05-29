@@ -1,6 +1,6 @@
 Leg Tracker
 ===========
-![ROS](https://img.shields.io/badge/ROS-Melodic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2018.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-3.4-blue.svg)
+![ROS](https://img.shields.io/badge/ROS-Noetic-brightgreen.svg)  ![OS](https://img.shields.io/badge/OS-Ubuntu%2020.04-orange.svg ) ![OpenCV](https://img.shields.io/badge/OpenCV-4.2-blue.svg)
 
 
 Usage
