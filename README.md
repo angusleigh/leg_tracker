@@ -15,6 +15,17 @@ Usage
 - `catkin_make`
 - `roslaunch leg_tracker joint_leg_tracker.launch`
 
+Use Docker
+------------------
+To build this project use following command
+
+```bash
+make docker_build
+```
+To run this project use the following command
+```bash
+make docker_run
+```
 
 Demos
 -------------------
