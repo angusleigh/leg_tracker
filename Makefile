@@ -6,5 +6,5 @@ docker_build:
 # Run docker project
 .PHONY : docker_run
 docker_run:
-	docker run -it --entrypoint /bin/bash lt
+	docker run -it  --network host  --entrypoint /bin/bash lt
 
