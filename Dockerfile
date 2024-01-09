@@ -15,9 +15,11 @@ RUN apt-get update \
     libxslt-dev \
     python3 \
     python3-pip\ 
+    python3-scipy \
     ros-noetic-tf\
     ros-noetic-interactive-markers\
-    ros-noetic-image-geometry
+    ros-noetic-image-geometry\
+    ros-noetic-xacro
 
 RUN pip3 install setuptools
 RUN pip3 install pykalman catkin-tools
