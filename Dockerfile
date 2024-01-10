@@ -1,5 +1,5 @@
 # Use the official ROS Melodic base image
-FROM ros:noetic-ros-base
+FROM osrf/ros:noetic-desktop-full
 
 # Set the working directory
 WORKDIR /workspace
