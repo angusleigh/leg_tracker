@@ -22,8 +22,11 @@ To build this project use following command
 ```bash
 make docker_build
 ```
+> **_NOTE:_**  You only have to run xhost + once each time you log into the machine. These settings persist per login session.
+
 To run this project use the following command
 ```bash
+make xh
 make docker_run
 ```
 
